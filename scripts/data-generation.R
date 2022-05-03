@@ -7,30 +7,12 @@ rm(list = ls())
 
 # Load libraries ----------------------------------------------------------
 
-library(tidyverse)
-
 # A package to convert a data frame into an exportable format
 library(flextable)
 
 library(officer)
 
-
-# Variables ---------------------------------------------------------------
-
-# Number of participants (even number)
-n <- 48
-
-# Neutral distribution: mean
-mean_neutral <- 1.2
-
-# Neutral distribution: standard deviation
-sd_neutral <- 0.1
-
-# Positive shock distribution: mean
-mean_up <- 1.6
-
-# Positive shock distribution: standard deviation
-sd_up <- sd_neutral
+library(tidyverse)
 
 
 # Set seed ----------------------------------------------------------------
@@ -38,7 +20,7 @@ sd_up <- sd_neutral
 set.seed(8642)
 
 
-# Generate prices ---------------------------------------------------------
+# Generate investment factors ---------------------------------------------
 
 generate_investment_factors_table <-
   function(n,
@@ -46,11 +28,16 @@ generate_investment_factors_table <-
            sd_neutral,
            mean_up,
            sd_up) {
+    # Check if n is even or odd; if odd add 1 to make it even
+    if ((n %% 2) != 0) {
+      n <- n + 1
+    }
+    
+    # Create empty data frame with n rows
     investment_factors <- data.frame(tibble(id = 1:n))
     
-    # Create mirroring negative shock distribution
-    mean_down = mean_neutral - (mean_up - mean_neutral)
-    sd_down = sd_up
+    # Mean difference between positive shock and neutral markets
+    mean_difference = mean_up - mean_neutral
     
     # Neutral market
     for (round in 1:4) {
@@ -67,31 +54,59 @@ generate_investment_factors_table <-
     for (round in 5:9) {
       round_name <- paste("round_", round, sep = "")
       
-      # Positive shock
-      investment_factors[1:(n / 2), round_name] <-
-        round(
-          rnorm(n / 2, mean = mean_up, sd = sd_up),
-          digits = 2
-        )
+      # Positive shock (every odd number)
       
-      # Negative shock
-      investment_factors[(n / 2 + 1):n, round_name] <-
-        round(
-          rnorm(n / 2, mean = mean_down, sd = sd_down),
-          digits = 2
-        )
+      # Draw positive shock values from positive shock normal distribution
+      values_up <- round(
+        rnorm(n / 2, mean = mean_up, sd = sd_up),
+        digits = 2
+      )
+      
+      # Index
+      index_up <- 1
+      
+      for (odd_row in seq(from = 1, to = n, by = 2)) {
+        investment_factors[odd_row, round_name] <- values_up[index_up]
+        
+        # Increment index
+        index_up <- index_up + 1
+      }
+      
+      
+      # Negative shock (every even number)
+      
+      # Derive negative shock values mirroring positive shock values
+      values_down <- values_up - 2 * mean_difference
+      
+      # Index
+      index_down <- 1
+      
+      for (even_row in seq(from = 2, to = n, by = 2)) {
+        investment_factors[even_row, round_name] <- values_down[index_down]
+        
+        # Increment index
+        index_down <- index_down + 1
+      }
     }
+    
+    # Check for any negative values (except for 1st column) and change them to 0
+    investment_factors[, -1][investment_factors[, -1] < 0] <- 0
     
     return(investment_factors)
   }
 
 
 investment_factors <- generate_investment_factors_table(
-  n = n,
-  mean_neutral = mean_neutral,
-  sd_neutral = sd_neutral,
-  mean_up = mean_up,
-  sd_up = sd_up
+  # Number of participants (even number)
+  n = 44,
+  # Neutral distribution: mean
+  mean_neutral = 1.2,
+  # Neutral distribution: standard deviation
+  sd_neutral = 0.1,
+  # Positive shock distribution: mean
+  mean_up = 1.8,
+  # Positive shock distribution: standard deviation
+  sd_up = 0.1
 )
 
 head(investment_factors)
@@ -133,27 +148,41 @@ save_as_docx(
 
 # Save data as RData file -------------------------------------------------
 
-save(investment_factors, file = "../data/investment-factors.RData")
+save(
+  investment_factors,
+  file = "../data/investment-factors.RData"
+)
 
 
 # Distribution visualizations ---------------------------------------------
 
+dataframe_values_to_vector <- function(dataframe, columns, row_indices) {
+  vector <- c()
+  
+  for (column in columns) {
+    vector <- append(
+      vector,
+      dataframe[row_indices, column]
+    )
+  }
+  
+  return(vector)
+}
+
+
 # Neutral market state
 
-investment_factors_neutral <- as.vector(
-  c(
-    investment_factors$round_1,
-    investment_factors$round_2,
-    investment_factors$round_3,
-    investment_factors$round_4
-  )
+investment_factors_neutral <- dataframe_values_to_vector(
+  dataframe = investment_factors,
+  columns = c("round_1", "round_2", "round_3", "round_4"),
+  row_indices = 1:nrow(investment_factors)
 )
 
 investment_factors_neutral_distribution <-
   ggplot(mapping = aes(x = investment_factors_neutral)) +
     geom_histogram(bins = 8) +
     labs(
-      title = "Distribution of Investment Factors in Neutral Market",
+      title = "Distribution of Investment Factors in the Neutral Market",
       x = "Investment Factor",
       y = "Frequency"
     ) +
@@ -171,21 +200,19 @@ ggsave(
 
 # Positive market shock
 
-investment_factors_up <- as.vector(
-  c(
-    investment_factors[1:(n / 2), "round_5"],
-    investment_factors[1:(n / 2), "round_6"],
-    investment_factors[1:(n / 2), "round_7"],
-    investment_factors[1:(n / 2), "round_8"],
-    investment_factors[1:(n / 2), "round_9"]
-  )
+indices_up <- seq(from = 1, to = nrow(investment_factors), by = 2)
+
+investment_factors_up <- dataframe_values_to_vector(
+  dataframe = investment_factors,
+  columns = c("round_5", "round_6", "round_7", "round_8", "round_9"),
+  row_indices = indices_up
 )
 
 investment_factors_up_distribution <-
   ggplot(mapping = aes(x = investment_factors_up)) +
     geom_histogram(bins = 8) +
     labs(
-      title = "Distribution of Investment Factors for Positive Market Shock",
+      title = "Distribution of Investment Factors for the Positive Market Shock",
       x = "Investment Factor",
       y = "Frequency"
     ) +
@@ -203,21 +230,19 @@ ggsave(
 
 # Negative market shock
 
-investment_factors_down <- as.vector(
-  c(
-    investment_factors[(n / 2 + 1):n, "round_5"],
-    investment_factors[(n / 2 + 1):n, "round_6"],
-    investment_factors[(n / 2 + 1):n, "round_7"],
-    investment_factors[(n / 2 + 1):n, "round_8"],
-    investment_factors[(n / 2 + 1):n, "round_9"]
-  )
+indices_down <- seq(from = 2, to = nrow(investment_factors), by = 2)
+
+investment_factors_down <- dataframe_values_to_vector(
+  dataframe = investment_factors,
+  columns = c("round_5", "round_6", "round_7", "round_8", "round_9"),
+  row_indices = indices_down
 )
 
 investment_factors_down_distribution <-
   ggplot(mapping = aes(x = investment_factors_down)) +
     geom_histogram(bins = 8) +
     labs(
-      title = "Distribution of Investment Factors for Negative Market Shock",
+      title = "Distribution of Investment Factors for the Negative Market Shock",
       x = "Investment Factor",
       y = "Frequency"
     ) +
@@ -231,3 +256,7 @@ ggsave(
   units = "cm",
   bg = "white"
 )
+
+
+# Validity check
+all(investment_factors_up - 2 * (1.8 - 1.2) == investment_factors_down)
