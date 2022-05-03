@@ -146,11 +146,19 @@ save_as_docx(
 )
 
 
-# Save data as RData file -------------------------------------------------
+# Export dataframe --------------------------------------------------------
 
+# Save as RData file
 save(
   investment_factors,
   file = "../data/investment-factors.RData"
+)
+
+# Save as CSV file
+write.csv(
+  investment_factors,
+  file = "../data/investment-factors.csv",
+  row.names = FALSE
 )
 
 
