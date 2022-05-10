@@ -36,9 +36,6 @@ generate_investment_factors_table <-
     # Create empty data frame with n rows
     investment_factors <- data.frame(tibble(id = 1:n))
     
-    # Mean difference between positive shock and neutral markets
-    mean_difference = mean_up - mean_neutral
-    
     # Neutral market
     for (round in 1:4) {
       round_name <- paste("round_", round, sep = "")
@@ -76,7 +73,7 @@ generate_investment_factors_table <-
       # Negative shock (every even number)
       
       # Derive negative shock values mirroring positive shock values
-      values_down <- values_up - 2 * mean_difference
+      values_down <- mean_neutral - (values_up - mean_neutral)
       
       # Index
       index_down <- 1
@@ -267,4 +264,4 @@ ggsave(
 
 
 # Validity check
-all(investment_factors_up - 2 * (1.8 - 1.2) == investment_factors_down)
+all(1.2 - (investment_factors_up - 1.2) == investment_factors_down)
