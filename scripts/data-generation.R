@@ -185,7 +185,7 @@ investment_factors_neutral <- dataframe_values_to_vector(
 
 investment_factors_neutral_distribution <-
   ggplot(mapping = aes(x = investment_factors_neutral)) +
-    geom_histogram(bins = 8) +
+    geom_histogram(binwidth = 0.1) +
     labs(
       title = "Distribution of Investment Factors in the Neutral Market",
       x = "Investment Factor",
@@ -215,7 +215,7 @@ investment_factors_up <- dataframe_values_to_vector(
 
 investment_factors_up_distribution <-
   ggplot(mapping = aes(x = investment_factors_up)) +
-    geom_histogram(bins = 8) +
+    geom_histogram(binwidth = 0.1) +
     labs(
       title = "Distribution of Investment Factors for the Positive Market Shock",
       x = "Investment Factor",
@@ -245,7 +245,7 @@ investment_factors_down <- dataframe_values_to_vector(
 
 investment_factors_down_distribution <-
   ggplot(mapping = aes(x = investment_factors_down)) +
-    geom_histogram(bins = 8) +
+    geom_histogram(binwidth = 0.1) +
     labs(
       title = "Distribution of Investment Factors for the Negative Market Shock",
       x = "Investment Factor",
@@ -263,5 +263,8 @@ ggsave(
 )
 
 
-# Validity check
+# Validity check ----------------------------------------------------------
+
+# mean_neutral = 1.2
+
 all(1.2 - (investment_factors_up - 1.2) == investment_factors_down)
