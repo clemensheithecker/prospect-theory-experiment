@@ -18,7 +18,7 @@ library(tidyverse)
 survey_responses_raw <- read_csv(
   file = "../data/survey-responses-raw.csv",
   # Specify the column types (f = factor, i = integer)
-  col_types = "fiiiiiiiffffffff",
+  col_types = "fiiniinnffffffff",
   # No name repair or checks, beyond basic existence of names
   name_repair = "minimal"
 ) %>%
