@@ -74,6 +74,8 @@ investor_success_summary <- investor_success %>%
     market_shock,
     identification_number,
     student_number,
+    # investment_decision_week_4,
+    # investment_decision_week_8,
     # capital_week_5,
     # capital_week_9,
     capital_total
