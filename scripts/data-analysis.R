@@ -248,8 +248,7 @@ wilcox.test(
   conf.level = 0.95
 )
 
-# Conclusion: Since p-value = 0.2491 < p-critical 0.5 the null hypothesis is to
-# be rejected. The change in the investment decisions following a positive
-# market shock is significantly different to the change in the investment
-# decisions following a negative market shock. This difference is significant at
-# the 5% level.
+# Conclusion: Since p-value = 0.2491 > p-critical = 0.05 we fail to reject the
+# null hypothesis. The change in the investment decisions following a positive
+# market shock is not significantly different to the change in the investment
+# decisions following a negative market shock.
