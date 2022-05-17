@@ -154,3 +154,102 @@ diff(
 # Observation: A positive market shock decreases the standard deviation by 0.72
 # (-0.72) euros and with that the variability in the investment decision
 # distribution.
+
+
+# Mann-Whitney U Test -----------------------------------------------------
+
+# Null hypothesis: Individuals react symmetrically to positive and negative
+# shocks. Thus, the deviation of the investment decision values in the neutral
+# market state and the investment decision values in the shock market state are
+# equal.
+
+# Alternative hypothesis: Individuals react asymmetrically to positive and
+# negative shocks. Thus, deviation of the investment decision values in the
+# neutral market state and the investment decision values in the shock market
+# state are not equal.
+
+
+# Data transformation: absolute mean differences
+
+investments_deviation <- investments %>%
+  select(
+    market_shock,
+    identification_number,
+    investment_decision_week_4,
+    investment_decision_week_8
+  ) %>%
+  mutate(
+    deviation = case_when(
+      market_shock == "positive" ~
+        investment_decision_week_8 - investment_decision_week_4,
+      market_shock == "negative" ~
+        investment_decision_week_4 - investment_decision_week_8
+    )
+  )
+
+head(investments_deviation)
+
+deviation_market_down <- investments_deviation %>%
+  filter(market_shock == "negative") %>%
+  pull(deviation)
+
+deviation_market_up <- investments_deviation %>%
+  filter(market_shock == "positive") %>%
+  pull(deviation)
+
+
+investment_decisions_deviation_distribution_visualization <-
+  function(x, title, subtitle = NULL, path, y_limits = NULL) {
+    plot <-
+      ggplot(mapping = aes(x = x)) +
+      geom_histogram(binwidth = 1) +
+      scale_y_continuous(breaks = scales::pretty_breaks(), limits = y_limits) +
+      labs(
+        title = title,
+        subtitle = subtitle,
+        x = "Investment Decision",
+        y = "Frequency"
+      ) +
+      theme_minimal()
+    
+    ggsave(
+      plot = plot,
+      path,
+      width = 16,
+      height = 10,
+      units = "cm",
+      bg = "white"
+    )
+    
+    print(plot)
+  }
+
+investment_decisions_deviation_distribution_visualization(
+  x = deviation_market_down,
+  title = "Distribution of Deviations in Investment Decision",
+  subtitle = "Negative Shock Market",
+  path = "../figures/investment-decision-deviations-negative-market-distribution.png"
+)
+
+investment_decisions_deviation_distribution_visualization(
+  x = deviation_market_up,
+  title = "Distribution of Deviations in Investment Decision",
+  subtitle = "Positive Shock Market",
+  path = "../figures/investment-decision-deviations-positive-market-distribution.png"
+)
+
+
+wilcox.test(
+  x = deviation_market_down,
+  y = deviation_market_up,
+  alternative = "two.sided",
+  paired = FALSE,
+  exact = FALSE,
+  conf.level = 0.95
+)
+
+# Conclusion: Since p-value = 0.2491 < p-critical 0.5 the null hypothesis is to
+# be rejected. The change in the investment decisions following a positive
+# market shock is significantly different to the change in the investment
+# decisions following a negative market shock. This difference is significant at
+# the 5% level.
