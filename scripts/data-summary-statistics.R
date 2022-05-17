@@ -9,6 +9,8 @@ rm(list = ls())
 
 library(tidyverse)
 
+library(xtable)
+
 
 # Load data ---------------------------------------------------------------
 
@@ -61,6 +63,62 @@ number_observations
 
 # 30 observations in the sample of which half (15) were exposed to a negative
 # and the other half (15) exposed to a positive shock
+
+
+# Summary statistics to LaTeX ---------------------------------------------
+
+summary_stats_to_latex <- function(df, file, title, label) {
+  # Capture output from xtable
+  output <- capture.output(print(
+    xtable(
+      df,
+      type = "latex",
+      caption = title,
+      # Set the alignment of the columns
+      align = c("l", "X", "r", "r", "r", "r"),
+      # Set the number of digits
+      digits = c(0, 0, 3, 3, 3, 3),
+      # Set the format of the columns
+      display = c("s", "s", "f", "f", "f", "f"),
+      label = label
+    ),
+    type = "latex",
+    include.rownames = FALSE,
+    caption.placement = "top",
+    booktabs = TRUE,
+    tabular.environment = "tabularx",
+    width = "\\textwidth",
+    comment = FALSE
+  ))
+  
+  caption_position <- which(startsWith(output, "\\caption{"))
+  label_position <- which(startsWith(output, "\\label{"))
+  
+  caption <- output[caption_position]
+  label <- output[label_position]
+  
+  tabularx_position <- which(startsWith(output, "\\begin{tabularx}"))
+  
+  output <- c(
+    output[1:caption_position - 1],
+    caption,
+    label,
+    output[tabularx_position],
+    output[tabularx_position + 1:length(output)]
+  )
+  
+  # Remove null values
+  output <- output[!is.na(output)]
+  
+  # Remove unnecessary decimal points
+  output <- gsub(".000", "", output)
+  
+  # Print table
+  cat(output, sep = "\n")
+  
+  # Write to LaTeX file
+  write(output, file = file)
+}
 
 
 # Summary statistics ------------------------------------------------------
@@ -154,3 +212,13 @@ investments_summary_stats
 # positive marketed shock invested 7.19 out of their 10 euros.
 # 
 # etc.
+
+
+summary_stats_to_latex(
+  df = investments_summary_stats,
+  file = "../reports/figures/investments_summary_stats.tex",
+  title = paste0(
+    "Investments Summary Statistics (", number_observations, " Observations)"
+  ),
+  label = "table:InvestmentsSummaryStats"
+)
