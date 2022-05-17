@@ -84,3 +84,87 @@ investor_success_summary <- investor_success %>%
   filter(capital_total == max(capital_total))
 
 investor_success_summary
+
+
+# Investment decision distribution visualization --------------------------
+
+investment_decisions_distribution_visualization <-
+  function(x, title, path, y_limits = NULL) {
+    plot <-
+      ggplot(mapping = aes(x = x)) +
+      geom_histogram(binwidth = 1) +
+      scale_x_continuous(
+        breaks = seq(from = 0, to = 10, by = 1),
+        limits = c(-0.5, 10.5)
+      ) +
+      scale_y_continuous(breaks = scales::pretty_breaks(), limits = y_limits) +
+      labs(
+        title = title,
+        x = "Investment Decision",
+        y = "Frequency"
+      ) +
+      theme_minimal()
+    
+    ggsave(
+      plot = plot,
+      path,
+      width = 16,
+      height = 10,
+      units = "cm",
+      bg = "white"
+    )
+    
+    print(plot)
+}
+
+
+# Neutral market state
+
+investment_decisions_distribution_visualization(
+  x = investments %>%
+    select(
+      market_shock,
+      identification_number,
+      investment_decision_week_4,
+      investment_decision_week_8
+    ) %>%
+    pull(investment_decision_week_4),
+  title = "Distribution of Investment Decisions in the Neutral Market",
+  path = "../figures/investment-decisions-neutral-market-distribution.png"
+)
+
+
+# Positive market shock
+
+investment_decisions_distribution_visualization(
+  x = investments %>%
+    select(
+      market_shock,
+      identification_number,
+      investment_decision_week_4,
+      investment_decision_week_8
+    ) %>%
+    filter(market_shock == "positive") %>%
+    pull(investment_decision_week_8),
+  title = "Distribution of Investment Decisions for the Positive Market Shock",
+  path = "../figures/investment-decisions-positive-shock-distribution.png",
+  y_limits = c(0, 10)
+)
+
+
+# Negative market shock
+
+investment_decisions_distribution_visualization(
+  x = investments %>%
+    select(
+      market_shock,
+      identification_number,
+      investment_decision_week_4,
+      investment_decision_week_8
+    ) %>%
+    filter(market_shock == "negative") %>%
+    pull(investment_decision_week_8),
+  title = "Distribution of Investment Decisions for the Negative Market Shock",
+  path = "../figures/investment-decisions-negative-shock-distribution.png",
+  y_limits = c(0, 10)
+)
