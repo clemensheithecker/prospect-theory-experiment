@@ -187,7 +187,8 @@ investment_factors_neutral_distribution <-
   ggplot(mapping = aes(x = investment_factors_neutral)) +
     geom_histogram(binwidth = 0.1) +
     labs(
-      title = "Distribution of Investment Factors in the Neutral Market",
+      title = "Distribution of Investment Factors",
+      subtitle = "Neutral Market",
       x = "Investment Factor",
       y = "Frequency"
     ) +
@@ -217,7 +218,8 @@ investment_factors_up_distribution <-
   ggplot(mapping = aes(x = investment_factors_up)) +
     geom_histogram(binwidth = 0.1) +
     labs(
-      title = "Distribution of Investment Factors for the Positive Market Shock",
+      title = "Distribution of Investment Factors",
+      subtitle = "Positive Shock Market",
       x = "Investment Factor",
       y = "Frequency"
     ) +
@@ -247,7 +249,8 @@ investment_factors_down_distribution <-
   ggplot(mapping = aes(x = investment_factors_down)) +
     geom_histogram(binwidth = 0.1) +
     labs(
-      title = "Distribution of Investment Factors for the Negative Market Shock",
+      title = "Distribution of Investment Factors",
+      subtitle = "Negative Shock Market",
       x = "Investment Factor",
       y = "Frequency"
     ) +

@@ -89,7 +89,7 @@ investor_success_summary
 # Investment decision distribution visualization --------------------------
 
 investment_decisions_distribution_visualization <-
-  function(x, title, path, y_limits = NULL) {
+  function(x, title, subtitle = NULL, path, y_limits = NULL) {
     plot <-
       ggplot(mapping = aes(x = x)) +
       geom_histogram(binwidth = 1) +
@@ -100,6 +100,7 @@ investment_decisions_distribution_visualization <-
       scale_y_continuous(breaks = scales::pretty_breaks(), limits = y_limits) +
       labs(
         title = title,
+        subtitle = subtitle,
         x = "Investment Decision",
         y = "Frequency"
       ) +
@@ -129,7 +130,8 @@ investment_decisions_distribution_visualization(
       investment_decision_week_8
     ) %>%
     pull(investment_decision_week_4),
-  title = "Distribution of Investment Decisions in the Neutral Market",
+  title = "Distribution of Investment Decisions",
+  subtitle = "Neutral Market",
   path = "../figures/investment-decisions-neutral-market-distribution.png"
 )
 
@@ -146,7 +148,8 @@ investment_decisions_distribution_visualization(
     ) %>%
     filter(market_shock == "positive") %>%
     pull(investment_decision_week_8),
-  title = "Distribution of Investment Decisions for the Positive Market Shock",
+  title = "Distribution of Investment Decisions",
+  subtitle = "Positive Shock Market",
   path = "../figures/investment-decisions-positive-shock-distribution.png",
   y_limits = c(0, 10)
 )
@@ -164,7 +167,8 @@ investment_decisions_distribution_visualization(
     ) %>%
     filter(market_shock == "negative") %>%
     pull(investment_decision_week_8),
-  title = "Distribution of Investment Decisions for the Negative Market Shock",
+  title = "Distribution of Investment Decisions",
+  subtitle = "Negative Shock Market",
   path = "../figures/investment-decisions-negative-shock-distribution.png",
   y_limits = c(0, 10)
 )
