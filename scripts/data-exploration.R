@@ -172,3 +172,60 @@ investment_decisions_distribution_visualization(
   path = "../figures/investment-decisions-negative-shock-distribution.png",
   y_limits = c(0, 10)
 )
+
+
+investments %>%
+  select(
+    market_shock,
+    identification_number,
+    investment_decision_week_4,
+    investment_decision_week_8
+  ) %>%
+  pivot_longer(
+    cols = c(investment_decision_week_4, investment_decision_week_8),
+    names_to = "measure",
+    values_to = "value"
+  ) %>%
+  mutate(
+    measure = case_when(
+      measure == "investment_decision_week_4" ~ "week_4",
+      market_shock == "negative" & measure == "investment_decision_week_8" ~
+        "week_8_negative",
+      market_shock == "positive" & measure == "investment_decision_week_8" ~
+        "week_8_positive"
+    )
+  ) %>%
+  select(measure, value) %>%
+  ggplot(data = ., mapping = aes(x = value)) +
+  geom_histogram(binwidth = 1) +
+  scale_x_continuous(
+    breaks = seq(from = 0, to = 10, by = 1),
+    limits = c(-0.5, 10.5)
+  ) +
+  scale_y_continuous(breaks = scales::pretty_breaks()) +
+  facet_wrap(
+    ~ measure,
+    ncol = 1,
+    labeller = labeller(
+      measure = c(
+        week_4 = "Neutral Market State (Week 4)",
+        week_8_negative = "Negative Shock Market (Week 8)",
+        week_8_positive = "Positive Shock Market (Week 8)"
+      )
+    )
+  ) +
+  labs(
+    title = "Distributions of Investment Decisions",
+    x = "Investment Decision",
+    y = "Frequency"
+  ) +
+  theme_minimal()
+
+ggsave(
+  plot = last_plot(),
+  file = "../figures/investment-decisions-distributions.png",
+  width = 16,
+  height = 10 * 2.25,
+  units = "cm",
+  bg = "white"
+)

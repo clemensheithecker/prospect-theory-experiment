@@ -7,6 +7,8 @@ rm(list = ls())
 
 # Load libraries ----------------------------------------------------------
 
+library(gtsummary)
+
 library(tidyverse)
 
 library(xtable)
@@ -222,3 +224,10 @@ summary_stats_to_latex(
   ),
   label = "table:InvestmentsSummaryStats"
 )
+
+
+# Summary statistics of participants --------------------------------------
+
+survey_responses %>%
+  select(gender:trading_experience_cryptocurrency) %>%
+  tbl_summary()

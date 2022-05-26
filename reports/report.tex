@@ -32,17 +32,7 @@
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\textwidth]{investment-factors-neutral-market-distribution}
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.7\textwidth]{investment-factors-negative-shock-distribution}
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.7\textwidth]{investment-factors-positive-shock-distribution}
+	\includegraphics[width=0.7\textwidth]{investment-factors-distributions}
 \end{figure}
 
 
@@ -56,27 +46,12 @@ At the end of week 4, individuals invested on average 8.7 euros out of their 10 
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\textwidth]{investment-decisions-neutral-market-distribution}
+	\includegraphics[width=0.7\textwidth]{investment-decisions-distributions}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\textwidth]{investment-decisions-negative-shock-distribution}
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.7\textwidth]{investment-decisions-positive-shock-distribution}
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.7\textwidth]{investment-decision-deviations-negative-market-distribution}
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.7\textwidth]{investment-decision-deviations-positive-market-distribution}
+	\includegraphics[width=0.7\textwidth]{investment-decision-deviations-distributions}
 \end{figure}
 
 
@@ -84,21 +59,27 @@ At the end of week 4, individuals invested on average 8.7 euros out of their 10 
 
 \subsection{Difference in Differences Analyses}
 
-A negative market shock decreases the mean investment decision by 0.26 (-0.26) euros and with that the average amount of money invested. A positive market shock increases the mean investment decision by 0.26 euros and with that the average amount of money invested.
+The negative market shock decreases the mean investment decision by 0.26 (-0.26) euros more compared to the positive market shock. And with that, the average amount of money invested decreases more following a negative shock compared to a positive one. Alternatively, the positive market shock decreases the mean investment decision by 0.26 euros less compared to the negative market shock.
 
-A negative market shock increases the standard deviation by 0.72 euros and with that the variability in the investment decision distribution. A positive market shock decreases the standard deviation by 0.72 (-0.72) euros and with that the variability in the investment decision distribution.
+The negative market shock increases the standard deviation by 0.72 euros compared to the positive market shock. And with that, the variability in the investment decision distribution increases more following a negative market shock compared to the case of a positive market shock.
 
 
 \subsection{Mann-Whitney U Test}
 
 \begin{nullhypothesis}
-Individuals react symmetrically to positive and negative shocks. Thus, the deviation of the investment decision values in the neutral market state and the investment decision values in the shock market state are equal.
+Individuals react symmetrically to positive and negative shocks. Thus, the deviation in the investment decision values in the positive shock market and the inverse deviation in the investment decision values in the negative shock market are equal.
 \end{nullhypothesis}
 
 \begin{alternativehypothesis}
-Individuals react asymmetrically to positive and negative shocks. Thus, deviation of the investment decision values in the neutral market state and the investment decision values in the shock market state are not equal.
+Individuals react asymmetrically to positive and negative shocks. Thus, the deviation in the investment decision values in the positive shock market and the inverse deviation in the investment decision values in the negative shock market are not equal.
 \end{alternativehypothesis}
 
-We fail to reject the null hypothesis since the $p\text{-value} = 0.2491 > p\text{-critical} = 0.05$ we fail to reject the null hypothesis. The change in the investment decisions following a positive market shock is not significantly different to the change in the investment decisions following a negative market shock.
+We fail to reject the null hypothesis since the $p\text{-value} = 0.2491 > p\text{-critical} = 0.10$. The change in the investment decisions following a positive market shock is not significantly different to the inverse change in the investment decisions following a negative market shock.
+
+\subsubsection{Subgroup Analysis}
+
+Subsample using only observations of individuals who changed their investment decision after the market shocks: We reject the null hypothesis in favor of the alternative hypothesis since $p\text{-value} = 0.0814 < p-critical = 0.10$. The change in the investment decisions following a positive market shock is significantly different to the inverse change in the investment decisions following a negative market shock at the 10 percent level.
+
+Subsample using only observations of individuals with at least some trading experience: We fail to reject the null hypothesis since $p\text{-value} = 0.4368 > p\text{-critical} = 0.10$. The change in the investment decisions following a positive market shock is not significantly different to the inverse change in the investment decisions following a negative market shock.
 
 \end{document}

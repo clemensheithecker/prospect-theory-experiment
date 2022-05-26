@@ -266,6 +266,53 @@ ggsave(
 )
 
 
+# Create data frame
+investment_factors_distribution <- data.frame() %>%
+  bind_rows(
+    as.data.frame(investment_factors_neutral) %>%
+      rename(value = investment_factors_neutral) %>%
+      mutate(measure = "neutral", .before = everything()),
+    as.data.frame(investment_factors_down) %>%
+      rename(value = investment_factors_down) %>%
+      mutate(measure = "down", .before = everything()),
+    as.data.frame(investment_factors_up) %>%
+      rename(value = investment_factors_up) %>%
+      mutate(measure = "up", .before = everything())
+  )
+
+ggplot(
+  data = investment_factors_distribution,
+  mapping = aes(x = value)
+) +
+  geom_histogram(binwidth = 0.1) +
+  facet_wrap(
+    ~ measure,
+    ncol = 1,
+    labeller = labeller(
+      measure = c(
+        neutral = "Neutral Market State",
+        down = "Negative Shock",
+        up = "Positive Shock"
+      )
+    )
+  ) +
+  labs(
+    title = "Distributions of Investment Factors",
+    x = "Investment Factor",
+    y = "Frequency"
+  ) +
+  theme_minimal()
+
+ggsave(
+  plot = last_plot(),
+  file = "../figures/investment-factors-distributions.png",
+  width = 16,
+  height = 10 * 2.25,
+  units = "cm",
+  bg = "white"
+)
+
+
 # Validity check ----------------------------------------------------------
 
 # mean_neutral = 1.2
